@@ -5,15 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/mmuoDev/esusu-comms/events"
-)
-
-const (
-	endpoint = "https://sdk.iad-06.braze.com"
 )
 
 type event struct {
@@ -22,16 +19,18 @@ type event struct {
 
 type provider struct {
 	apiKey string
+	url    string
 }
 
-func NewProvider(apiKey string) *provider {
+func NewProvider(apiKey, url string) *provider {
 	return &provider{
 		apiKey: apiKey,
+		url:    url,
 	}
 }
 
 func (p *provider) CustomEvent(event events.Event) error {
-	url := endpoint + "/users/track"
+	url := p.url + "/users/track"
 	client := &http.Client{}
 	data := make(map[string]interface{})
 	eventData := make(map[string]interface{})
@@ -81,6 +80,13 @@ func (p *provider) CustomEvent(event events.Event) error {
 		time.Sleep(time.Duration(delay) * time.Second)
 		return p.CustomEvent(event)
 	}
-	//TODO: Read body response
+	if res.StatusCode != 201 {
+		bb, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return fmt.Errorf("response didn't return a 201 status, unable to read braze's body response due to=%v", err)
+		}
+		bodyString := string(bb)
+		return fmt.Errorf("response didn't return a 201 status due to=%v", bodyString)
+	}
 	return nil
 }

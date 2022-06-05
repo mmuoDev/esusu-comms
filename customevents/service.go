@@ -1,8 +1,12 @@
 package customevents
 
+import (
+	"github.com/mmuoDev/esusu-comms/events"
+)
+
 //CustomEventProvider represents method to be implemented in order to send custom events
 type CustomEventProvider interface {
-	CustomEvent (data interface{}) (interface{}, error)
+	CustomEvent(event events.Event) error
 }
 
 type service struct {
@@ -16,11 +20,9 @@ func NewService(c CustomEventProvider) *service {
 }
 
 //Send sends a custom event
-func (s *service) Send(i interface{}) error {
-	_, err := s.customEventProvider.CustomEvent(i)
-	if err != nil {
+func (s *service) CustomEvent(event events.Event) error {
+	if err := s.customEventProvider.CustomEvent(event); err != nil {
 		return err
 	}
-	//TODO: Check response
-	return nil 
+	return nil
 }
