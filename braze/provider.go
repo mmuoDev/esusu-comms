@@ -35,7 +35,7 @@ func (p *provider) CustomEvent(event events.Event) error {
 	data := make(map[string]interface{})
 	eventData := make(map[string]interface{})
 	payload := make(map[string][]interface{})
-	if len(event.UserIdentities) == 0 {
+	if _, ok := event.UserIdentities["external_id"]; !ok {
 		return errors.New("At least external_id is required for user identities")
 	}
 	if event.EventName == "" {

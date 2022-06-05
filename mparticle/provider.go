@@ -54,13 +54,13 @@ func (p *provider) CustomEvent(event esusuEvent.Event) error {
 		batch.Environment = events.DevelopmentEnvironment
 	}
 	//set user identities
-	if _, ok := event.UserAttributes["external_id"]; ok {
+	if _, ok := event.UserIdentities["external_id"]; !ok {
 		return errors.New("At least external_id is required for user identities")
 	}
 	email := ""
-	val, exists := event.UserAttributes["email"]
+	val, exists := event.UserIdentities["email"]
 	if exists {
-		email = val.(string)
+		email = val
 	}
 	batch.UserIdentities = &events.UserIdentities{
 		CustomerID: event.UserIdentities["external_id"],
