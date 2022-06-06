@@ -65,54 +65,10 @@ func (p *provider) MakeHTTPCall(event events.Event) (*http.Response, error) {
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.apiKey))
-	//res, _ := client.Do(req)
-	// bb, er := ioutil.ReadAll(res.Body)
-	// if er != nil {
-	// 	log.Fatal(er)
-	// }
-	// bodyString := string(bb)
-	// log.Fatal(bodyString, res.StatusCode)
 	return client.Do(req)
 }
 
 func (p *provider) CustomEvent(event events.Event) error {
-	//url := p.url + "/users/track"
-	// client := &http.Client{}
-	// data := make(map[string]interface{})
-	// eventData := make(map[string]interface{})
-	// payload := make(map[string][]interface{})
-	// if _, ok := event.UserIdentities["external_id"]; !ok {
-	// 	return errors.New("At least external_id is required for user identities")
-	// }
-	// if event.EventName == "" {
-	// 	return errors.New("Event name is required!")
-	// }
-	// for k, v := range event.UserIdentities {
-	// 	data[k] = v
-	// }
-	// for k, v := range event.UserAttributes {
-	// 	data[k] = v
-	// }
-	// for k, v := range event.CustomAttributes {
-	// 	data[k] = v
-	// }
-	// eventData["name"] = event.EventName
-	// payload["attributes"] = []interface{}{data}
-	// payload["events"] = []interface{}{eventData}
-	// bb, err := json.Marshal(payload)
-	// if err != nil {
-	// 	return err
-	// }
-	// req, err := http.NewRequest("POST", url, bytes.NewBuffer(bb))
-	// if err != nil {
-	// 	return err
-	// }
-	// req.Header.Add("Content-Type", "application/json")
-	// req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", p.apiKey))
-	// res, err := client.Do(req)
-	// if err != nil {
-	// 	return err
-	// }
 	res, err := p.MakeHTTPCall(event)
 	defer res.Body.Close()
 	if res.StatusCode == 429 {
