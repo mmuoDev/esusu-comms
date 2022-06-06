@@ -9,6 +9,8 @@ type userAttributes map[string]interface{}
 //customAttributes is a type for custom attributes
 type customAttributes map[string]interface{}
 
+
+//Event represents an event to be sent to data aggregator
 type Event struct {
 	EventName        string
 	UserIdentities   userIdentities

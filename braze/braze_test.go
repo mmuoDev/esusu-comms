@@ -1,11 +1,13 @@
 package braze
 
 import (
+	"io/ioutil"
 	http "net/http"
 	"net/http/httptest"
 	"testing"
 
 	esusuEvent "github.com/mmuoDev/esusu-comms/events"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -26,18 +28,34 @@ func testData() esusuEvent.Event {
 	return event
 }
 func TestBrazeCall(t *testing.T) {
-	// expected := `{
-	// 	"message" : "success",
-	// 	"attributes_processed" : 1
-	// 	"events_processed" : 1
-	// }`
+	expected := `
+	{
+		"message" : "success",
+		"attributes_processed" : 1
+		"events_processed" 1
+	  }
+	`
 	svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//TODO: How do I serve an error here?
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(expected))
+		w.WriteHeader(http.StatusCreated)
 	}))
 	defer svr.Close()
 	c := NewProvider(apiKey, svr.URL)
-	err := c.CustomEvent(testData())
+	res, err := c.MakeHTTPCall(testData())
 	if err != nil {
 		t.Errorf("expected res to be nil got %s", err)
 	}
+	bb, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		t.Error(err)
+	}
+	bs := string(bb)
+	t.Run("Body is as expected", func(t *testing.T) {
+		assert.Equal(t, expected, bs)
+	})
+	t.Run("HTTP status is as expected", func(t *testing.T) {
+		assert.Equal(t, http.StatusCreated, 201)
+	})
 }

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	eventName := "TEST_CUSTOM_EVENT"
-	ui := map[string]string{"external_id": "311c4d0b-7e7b-4033-95f1-3de455d1dc0b"}
+	ui := map[string]string{"external_id": "422c4d0b-7e7b-4033-95f1-3de455d1dc0b"}
 	ua := map[string]interface{}{"site": "Holmes Homes"}
 	ca := map[string]interface{}{"isCreditScoreRecorded": true}
 	event := esusuEvent.Event{
