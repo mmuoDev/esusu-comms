@@ -31,7 +31,6 @@ func NewProvider(apiKey, url string) *provider {
 
 func (p *provider) MakeHTTPCall(event events.Event) (*http.Response, error) {
 	url := p.url + "/users/track"
-	//url := p.url
 	client := &http.Client{}
 	data := make(map[string]interface{})
 	eventData := make(map[string]interface{})
@@ -70,6 +69,9 @@ func (p *provider) MakeHTTPCall(event events.Event) (*http.Response, error) {
 
 func (p *provider) CustomEvent(event events.Event) error {
 	res, err := p.MakeHTTPCall(event)
+	if err != nil {
+		return err
+	}
 	defer res.Body.Close()
 	if res.StatusCode == 429 {
 		delayString := res.Header.Get("Retry-After")
